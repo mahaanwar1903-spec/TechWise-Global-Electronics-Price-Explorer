@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>TechWise – Global Electronics Price Explorer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="container">
+        <h1 class="brand">TechWise</h1>
+        <p class="tagline">Global Electronics Price Explorer</p>
+
+        <nav class="nav">
+            <a href="/">Home</a>
+            <a href="/add">Add Product</a>
+            <a href="/fetch_ebay_production">Fetch from eBay (Production)</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+  <div class="filters" style="margin: 16px 0;">
+    <form id="filters" method="GET" action="/">
+        <div class="category-filters" style="margin-bottom: 8px;">
+    
+    <a href="/" 
+       class="btn small {{ '' == selected_category and 'active' or '' }}">
+        All
+    </a>
+
+    {% for cat in categories %}
+        <a href="/?category={{ cat }}"
+           class="btn small {{ cat == selected_category and 'active' or '' }}">
+            {{ cat }}
+        </a>
+    {% endfor %}
+</div>
+
+
+    </form>
+</div>
+    <section class="toolbar">
+        <form method="GET" action="/">
+            <input type="text"
+                   name="search"
+                   placeholder="Search products..."
+                   value="{{ request.args.get('search','') }}">
+                <select name="sort">
+                    <option value="">Sort by</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                </select>
+
+
+            <button type="submit">Search</button>
+        </form>
+
+        <div class="actions">
+            <a href="/fetch_ebay_production" class="btn primary">Fetch from eBay (Production)</a>
+            <a href="/add" class="btn">Add Product</a>
+        </div>
+    </section>
+    <a href="/compare" class="btn primary" style="margin-bottom:16px;">Compare Selected Products</a>
+
+
+    <section class="product-grid" aria-label="Products grid">
+
+        {% for product in products %}
+        <article class="product-card">
+
+            {% if product.image %}
+                <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image" />
+            {% else %}
+                <div class="product-image placeholder">No image</div>
+            {% endif %}
+
+            <h3 class="product-name">{{ product.name }}</h3>
+            <p class="product-meta">
+                Store: <strong>{{ product.store }}</strong>
+            </p>
+            <p class="product-price">
+    USD {{ (product.price / rate)|round(2) }} | PKR {{ "{:,.2f}".format(product.price) }}
+</p>
+
+
+
+            <div class="card-actions">
+                {% if product.link %}
+                    <a href="{{ product.link }}" target="_blank" class="btn small">Buy</a>
+                {% endif %}
+                <a href="/edit/{{ product.id }}" class="btn small">Edit</a>
+                <a href="/delete/{{ product.id }}" class="btn small danger">Delete</a>
+                <a href="/compare/add/{{ product.id }}" class="btn small">Compare</a>
+
+            </div>
+
+        </article>
+        {% endfor %}
+
+    </section>
+        <div class="pagination">
+            {% if current_page > 1 %}
+                <a href="?page={{ current_page - 1 }}" class="btn small">Prev</a>
+            {% endif %}
+
+            Page {{ current_page }} of {{ total_pages }}
+
+            {% if current_page < total_pages %}
+                <a href="?page={{ current_page + 1 }}" class="btn small">Next</a>
+            {% endif %}
+        </div>
+
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        &copy; {{ current_year }} TechWise. All prices are indicative.
+    </div>
+</footer>
+
+</body>
+</html>

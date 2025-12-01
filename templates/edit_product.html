@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<form method="GET" action="/">
+    <input type="text" name="search" placeholder="Search by product or store">
+    <button type="submit">Search</button>
+</form>
+<br>
+<body>
+    <h1>Edit Product</h1>
+
+    <form action="/update/{{ product['id'] }}" method="POST">
+        <label>Product Name:</label><br>
+        <input type="text" name="name" value="{{ product['name'] }}" required><br><br>
+
+        <label>Price (PKR):</label><br>
+        <input type="number" name="price" value="{{ product['price'] }}" required><br><br>
+
+        <label>Store Name:</label><br>
+        <input type="text" name="store" value="{{ product['store'] }}"><br><br>
+
+        <label>Product Link:</label><br>
+        <input type="text" name="link" value="{{ product['link'] }}"><br><br>
+
+        <button type="submit">Update Product</button>
+    </form>
+
+</body>
+</html>
